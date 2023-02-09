@@ -99,13 +99,21 @@ Vue.component('column-testing', {
     methods: {
         MoveCard(card, last) {
             if (last === undefined) {
+            this.CompareDate(card);
             eventBus.$emit('MoveToFour', card);
             this.cardList.splice(this.cardList.indexOf(card), 1);
         } else {
             eventBus.$emit('MoveToTwo', card);
             this.cardList.splice(this.cardList.indexOf(card), 1);
         }
-        } 
+        },
+        CompareDate(card) {
+            if (new Date(card.deadline) < new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) {
+                card.completed = true;
+            } else {
+                card.completed = false;
+            }
+        }
     }
 })
 
@@ -183,16 +191,17 @@ Vue.component('card-form',{
     <p v-if="card.dateEdit != null">Редактирование: {{ card.dateEdit }}</p>
     <p v-if="last != true && card.reason != null || card.reason != ''">Причина возврата: {{ card.reason }}</p>
     <p>Дата создания:{{card.dateCreate}}</p>
-    <button type="submit" @click="MoveCard(card)">
+    <p v-if="card.completed != null">Карточка:  {{ card.completed ? 'Просрочен' : 'Выполнен' }}</p>
+    <button type="submit" @click="MoveCard(card)"  v-if="card.completed === null">
     Переместить
     </button>
             <add-reason
-                v-if="last === true"
+                v-if="last === true && card.completed === null"
                 :card="card"
                 :MoveCard="MoveCard">
             </add-reason>
     </div>
-    <card-edit :card="card" @Edit="edit = $event"></card-edit>
+    <card-edit v-if="card.completed === null" :card="card" @Edit="edit = $event"></card-edit>
     </div>
     `,
     props: {
