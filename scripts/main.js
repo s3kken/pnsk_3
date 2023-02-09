@@ -91,14 +91,20 @@ Vue.component('column-testing', {
         <card-form
             v-for="card in cardList"
             :card="card"
-            :MoveCard="MoveCard">
+            :MoveCard="MoveCard"
+            :last="true">
         </card-form>
     </div>
     `,
     methods: {
-        MoveCard(card) {
+        MoveCard(card, last) {
+            if (last === undefined) {
             eventBus.$emit('MoveToFour', card);
             this.cardList.splice(this.cardList.indexOf(card), 1);
+        } else {
+            eventBus.$emit('MoveToTwo', card);
+            this.cardList.splice(this.cardList.indexOf(card), 1);
+        }
         } 
     }
 })
@@ -137,6 +143,7 @@ Vue.component('card-edit',{
             show: false,
             title: this.card.title,
             task: this.card.task,
+            reason: this.card.reason,
         }
     },
     props: {
@@ -153,6 +160,11 @@ Vue.component('card-edit',{
                 if (this.task)
                     this.card.task = this.task;
 
+                if (this.reason)
+                    this.card.task = this.reason;
+
+                this.card.dateEdit = new Date().toLocaleString();
+
                 this.show = false;
             }
 
@@ -168,10 +180,17 @@ Vue.component('card-form',{
     <p>{{ card.title }}</p>
     <p>{{ card.task }}</p>
     <p>Deadline:{{ card.deadline }}</p>
+    <p v-if="card.dateEdit != null">Редактирование: {{ card.dateEdit }}</p>
+    <p v-if="last != true && card.reason != null || card.reason != ''">Причина возврата: {{ card.reason }}</p>
     <p>Дата создания:{{card.dateCreate}}</p>
     <button type="submit" @click="MoveCard(card)">
     Переместить
     </button>
+            <add-reason
+                v-if="last === true"
+                :card="card"
+                :MoveCard="MoveCard">
+            </add-reason>
     </div>
     <card-edit :card="card" @Edit="edit = $event"></card-edit>
     </div>
@@ -180,10 +199,29 @@ Vue.component('card-form',{
         card: Object,
         edit: Boolean,
         MoveCard: Function,
+        last: Boolean,
     },
     methods: {
 
     }
+})
+
+Vue.component('add-reason', {
+    props: {
+        card: Object,
+        MoveCard: Function,
+    },
+    template: `
+    <form class="text-form-card" @submit.prevent="MoveCard(card, true)">
+        <textarea v-model="card.reason" v-bind:placeholder="card.reason"></textarea>
+        <button type="submit" :disabled="card.reason == null || card.reason == ''">Вернуть</button>
+    </form>
+    `,
+    data() {
+        return {
+            reason: this.card.reason,
+        }
+    },
 })
 
 Vue.component('create-card',{
