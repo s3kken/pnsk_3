@@ -165,10 +165,10 @@ Vue.component('card-edit',{
             if (this.show == false)
                 this.show = true;
             else {
-                if (this.title)
+                if (this.title != "")
                     this.card.title = this.title;
 
-                if (this.task)
+                if (this.task !="")
                     this.card.task = this.task;
 
                 this.card.dateEdit = new Date().toLocaleString();
