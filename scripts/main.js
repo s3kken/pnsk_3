@@ -37,6 +37,21 @@ mounted() {
 
 })
 
+Vue.component('card-edit',{
+    template:`
+    <div class="cardOne">
+        <form class="text-form-card">
+            <label for="title">Заголовок</label>
+            <input v-model="title" id="title" type="text" placeholder="title">
+            <textarea v-model="task" placeholder="task description"></textarea>
+            <input v-model="deadline" type="date">
+            <button type="submit">Yes</button>
+            <button type="submit">No</button>
+        </form>
+    </div>
+    `,
+})
+
 Vue.component('card-form',{
     template: `
     <div class="cardOne">
@@ -44,6 +59,7 @@ Vue.component('card-form',{
     <p>{{ card.task }}</p>
     <p>Deadline:{{ card.deadline }}</p>
     <p>Дата создания:{{card.dateCreate}}</p>
+
     </div>
     `,
     props: {
@@ -57,7 +73,7 @@ Vue.component('create-card',{
         <form class="text-form-card" @submit.prevent="onSubmit">
             <label for="title">Заголовок</label>
             <input v-model="title" id="title" type="text" placeholder="title">
-            <textarea v-model="task"></textarea>
+            <textarea v-model="task" placeholder="task description"></textarea>
             <input v-model="deadline" type="date">
             <button type="submit">Создать</button>
             <p v-if="errors.length">
@@ -101,6 +117,11 @@ Vue.component('create-card',{
 })
 
 let app = new Vue({
-    el: '#app'
+    el: '#app',
+    data(){
+        return{
+            check: false
+        }
+    }
 
 })
