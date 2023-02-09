@@ -25,6 +25,17 @@ mounted() {
     eventBus.$on('card-submitted', card => {
         this.cardsOne.push(card)
     })
+    eventBus.$on('MoveToTwo', card => {
+        this.cardsTwo.push(card)
+    })
+
+    eventBus.$on('MoveToThree', card => {
+        this.cardsThree.push(card)
+    })
+
+    eventBus.$on('MoveToFour', card => {
+        this.cardsFour.push(card)
+    })
 },
 
 })
@@ -37,12 +48,16 @@ Vue.component('column-planned-tasks', {
     <div class="col">
         <card-form
             v-for="card in cardList"
-            :card="card">
+            :card="card"
+            :MoveCard="MoveCard">
         </card-form>
     </div>
     `,
     methods: {
-
+        MoveCard(card) {
+            eventBus.$emit('MoveToTwo', card)
+            this.cardList.splice(this.cardList.indexOf(card), 1);
+        }
     }
 })
 
@@ -54,12 +69,16 @@ Vue.component('column-tasks-work', {
     <div class="col">
         <card-form
             v-for="card in cardList"
-            :card="card">
+            :card="card"
+            :MoveCard="MoveCard">
         </card-form>
     </div>
     `,
     methods: {
-
+        MoveCard(card) {
+            eventBus.$emit('MoveToThree', card);
+            this.cardList.splice(this.cardList.indexOf(card), 1);
+        }
     }
 })
 
@@ -71,12 +90,16 @@ Vue.component('column-testing', {
     <div class="col">
         <card-form
             v-for="card in cardList"
-            :card="card">
+            :card="card"
+            :MoveCard="MoveCard">
         </card-form>
     </div>
     `,
     methods: {
-        
+        MoveCard(card) {
+            eventBus.$emit('MoveToFour', card);
+            this.cardList.splice(this.cardList.indexOf(card), 1);
+        } 
     }
 })
 
@@ -146,7 +169,7 @@ Vue.component('card-form',{
     <p>{{ card.task }}</p>
     <p>Deadline:{{ card.deadline }}</p>
     <p>Дата создания:{{card.dateCreate}}</p>
-    <button type="submit">
+    <button type="submit" @click="MoveCard(card)">
     Переместить
     </button>
     </div>
@@ -156,6 +179,10 @@ Vue.component('card-form',{
     props: {
         card: Object,
         edit: Boolean,
+        MoveCard: Function,
+    },
+    methods: {
+
     }
 })
 
