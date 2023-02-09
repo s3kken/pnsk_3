@@ -36,6 +36,9 @@ mounted() {
     eventBus.$on('MoveToFour', card => {
         this.cardsFour.push(card)
     })
+    eventBus.$on('DeleteCard', card => {
+        this.cardsOne.splice(this.cardsOne.indexOf(card), 1);
+    })
 },
 
 })
@@ -49,7 +52,8 @@ Vue.component('column-planned-tasks', {
         <card-form
             v-for="card in cardList"
             :card="card"
-            :MoveCard="MoveCard">
+            :MoveCard="MoveCard"
+            :del="true">
         </card-form>
     </div>
     `,
@@ -189,12 +193,13 @@ Vue.component('card-form',{
     <p>{{ card.task }}</p>
     <p>Deadline:{{ card.deadline }}</p>
     <p v-if="card.dateEdit != null">Редактирование: {{ card.dateEdit }}</p>
-    <p v-if="last != true && card.reason != null || card.reason != ''">Причина возврата: {{ card.reason }}</p>
+    <p v-if="last != true && card.reason != null && card.reason != ''">Причина возврата: {{ card.reason }}</p>
     <p>Дата создания:{{card.dateCreate}}</p>
     <p v-if="card.completed != null">Карточка:  {{ card.completed ? 'Просрочен' : 'Выполнен' }}</p>
     <button type="submit" @click="MoveCard(card)"  v-if="card.completed === null">
     Переместить
     </button>
+    <button type="submit" v-if="del === true" @click="DeleteCard(card)">Удалить</button>
             <add-reason
                 v-if="last === true && card.completed === null"
                 :card="card"
@@ -209,9 +214,12 @@ Vue.component('card-form',{
         edit: Boolean,
         MoveCard: Function,
         last: Boolean,
+        del: Boolean,
     },
     methods: {
-
+        DeleteCard(card) {
+            eventBus.$emit('DeleteCard', card);
+        }
     }
 })
 
