@@ -155,7 +155,6 @@ Vue.component('card-edit',{
             show: false,
             title: this.card.title,
             task: this.card.task,
-            reason: this.card.reason,
         }
     },
     props: {
@@ -171,9 +170,6 @@ Vue.component('card-edit',{
 
                 if (this.task)
                     this.card.task = this.task;
-
-                if (this.reason)
-                    this.card.task = this.reason;
 
                 this.card.dateEdit = new Date().toLocaleString();
 
