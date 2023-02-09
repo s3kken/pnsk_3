@@ -49,7 +49,7 @@ Vue.component('column-planned-tasks', {
     },
     template: `
     <div class="col">
-        <card-form
+        <card-form class="column"
             v-for="card in cardList"
             :card="card"
             :MoveCard="MoveCard"
@@ -71,7 +71,7 @@ Vue.component('column-tasks-work', {
     },
     template: `
     <div class="col">
-        <card-form
+        <card-form class="column"
             v-for="card in cardList"
             :card="card"
             :MoveCard="MoveCard">
@@ -92,7 +92,7 @@ Vue.component('column-testing', {
     },
     template: `
     <div class="col">
-        <card-form
+        <card-form class="column"
             v-for="card in cardList"
             :card="card"
             :MoveCard="MoveCard"
@@ -127,7 +127,7 @@ Vue.component('column-completed-tasks', {
     },
     template: `
     <div class="col">
-        <card-form
+        <card-form class="column"
             v-for="card in cardList"
             :card="card">
         </card-form>
