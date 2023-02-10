@@ -189,7 +189,10 @@ Vue.component('card-form',{
     <p>{{ card.task }}</p>
     <p>Deadline:{{ card.deadline }}</p>
     <p v-if="card.dateEdit != null">Редактирование: {{ card.dateEdit }}</p>
-    <p v-if="last != true && card.reason != null && card.reason != ''">Причина возврата: {{ card.reason }}</p>
+    <p v-if="last != true && card.reason.length > 0 "></p>
+    <ul >
+    <li v-for="reas in card.reason">{{ reas }}</li>
+    </ul>
     <p>Дата создания:{{card.dateCreate}}</p>
     <p v-if="card.completed != null">Карточка:  {{ card.completed ? 'Просрочен' : 'Выполнен' }}</p>
     <button type="submit" @click="MoveCard(card)"  v-if="card.completed === null">
@@ -225,16 +228,21 @@ Vue.component('add-reason', {
         MoveCard: Function,
     },
     template: `
-    <form class="text-form-card" @submit.prevent="MoveCard(card, true)">
-        <textarea v-model="card.reason" v-bind:placeholder="card.reason"></textarea>
-        <button type="submit" :disabled="card.reason == null || card.reason == ''">Вернуть</button>
+    <form class="text-form-card" @submit.prevent="arrReason(reason), MoveCard(card, true)">
+        <textarea v-model="reason" ></textarea>
+        <button type="submit" :disabled="reason == null || reason == ''">Вернуть</button>
     </form>
     `,
     data() {
         return {
-            reason: this.card.reason,
+            reason: null
         }
     },
+    methods: {
+        arrReason(reason) {
+            this.card.reason.push(reason);
+        }
+    }
 })
 
 Vue.component('create-card',{
@@ -271,7 +279,7 @@ Vue.component('create-card',{
                     task: this.task,
                     deadline: this.deadline,
                     dateCreate: new Date().toLocaleString(),
-                    reason: null,
+                    reason: [],
                     completed: null,
                 }
                 eventBus.$emit('card-submitted', card)
